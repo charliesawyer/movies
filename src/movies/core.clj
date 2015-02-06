@@ -27,8 +27,8 @@
 
 (defn movies-from-year
   [movies year]
-  "Return sequence of movies by year"
+  "Return sequence of movie titles by year"
   (letfn [(pred? [m] (= year (:year m)))]
-    (filter pred? movies)))
+    (map :title (filter pred? movies))))
 
 (movies-from-year myVids "1941")
