@@ -1,5 +1,5 @@
-(require '(java.io.FileReader))
-(require '(java.io.BufferedReader))
+(ns movies.core
+  (:import [java.io BufferedReader FileReader]))
 
 (defn make-video-stream
   [x]
