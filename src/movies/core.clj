@@ -20,10 +20,15 @@
   [file]
   (let [vids (make-video-stream file)]
     (map make-video-map (map make-video-array vids))))
+
 (def myVids (make-videos "TITLES.TXT"))
+
 (nth myVids 99)
-(defn movies-from-year [movies year]
+
+(defn movies-from-year
+  [movies year]
   "Return sequence of movies by year"
   (letfn [(pred? [m] (= year (:year m)))]
     (filter pred? movies)))
+
 (movies-from-year myVids "1941")
