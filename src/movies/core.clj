@@ -1,31 +1,31 @@
 (ns movies.core
   (:import [java.io BufferedReader FileReader]))
 
-(defn make-video-stream
+(defn make-movie-stream
   "A lazy seqence of lines from file."
   [file]
   (line-seq (new java.io.BufferedReader
                  (new java.io.FileReader file))))
 
-(defn make-video-array
+(defn make-movie-array
   "make an array from string of form 'Title (Year)'"
   [x]
   (clojure.string/split x #"[\(\)]"))
 
-(defn make-video-map
+(defn make-movie-map
   "from [TITLE YEAR] make {:title TITLE :year YEAR}"
   [line]
   {:title (get line 0) :year (get line 1)})
 
-(defn make-videos
+(defn make-movies
   "A sequence of movie maps from file. "
   [file]
-  (let [vids (make-video-stream file)]
-    (map make-video-map (map make-video-array vids))))
+  (let [vids (make-movie-stream file)]
+    (map make-movie-map (map make-movie-array vids))))
 
 (def my-vids
   "The movie maps from TITLES.TXT."
-  (make-videos "TITLES.TXT"))
+  (make-movies "TITLES.TXT"))
 
 (nth my-vids 99)
 
