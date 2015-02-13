@@ -1,6 +1,8 @@
 (ns movies.core
   (:import [java.io BufferedReader FileReader]))
 
+(defn make-video-stream [x] (line-seq (new java.io.BufferedReader (new java.io.FileReader x ))))
+
 (defn make-movie-stream
   "A lazy seqence of lines from file."
   [file]
