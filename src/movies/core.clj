@@ -44,12 +44,8 @@
 {:year 1941 [{:title "Citizen Kane" :year 1941} {:title "Suspense" :year 1941}]}
 {:year 1970 [{:title "foo" :year 1970} {:title "Jaws" :year 1970}]}
 
-;; {:a {:q 2 :z 4}  :b 2 :c 3}
-{1941 [
-       {:title "Citizen Kane"
-        :year 1941}
-       {:title "Suspense"
-        :year 1941}
-       ]
- 1970 [{:title "Jaws" :year 1970}] }
+{1941 [{:title "Citizen Kane" :year 1941}
+       {:title "Suspense" :year 1941}]
+ 1970 [{:title "Jaws" :year 1970}]}
+
 (get {1941 "foo"} 1941)
