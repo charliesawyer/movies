@@ -1,12 +1,15 @@
-(ns movies.core
-  (:import [java.io BufferedReader FileReader]))
+(ns movies.core)
 
-(defn get-records
+(defn make-year-to-movies-db
+  "A map of year to vector of movies from that year."
   [file]
-  (let [re #"^ *(.+) +\((\d+)\) *$"]
-    (letfn [(make [line]
-              (let [[_ title year] (re-find re line)]
-                {:title title :year year}))]
-      (map make (line-seq (clojure.java.io/reader file))))))
+  (letfn [(make [line]
+            (let [[_ t y] (re-find #"^ *(.+) +\((\d+)\) *$" line)]
+              {:title t :year (Integer/parseInt y)}))
+          (add [db movie]
+            (update-in db [(:year movie)] (fnil conj []) movie))]
+    (reduce add {} (map make (line-seq (clojure.java.io/reader file))))))
 
-(nth (get-records "TITLES.TXT") 99)
+(def db (make-year-to-movies-db "TITLES.TXT"))
+
+(clojure.pprint/pprint (map :title (get db 1989)))
