@@ -78,8 +78,8 @@ movie-db
   (let [year (:year movie)]
      (conj (or (get db year) []) movie)))
 
-(defn add-movie-to-db
-  [db movie]
+(defn add-movies-to-db
+  [db movie-stream]
   (comment "How do you use add-movie-to-db-entry here?"))
 
 (def mv1 {:year "1941" :title "Citizen Kane"})
