@@ -1,8 +1,6 @@
 (ns movies.core
   (:import [java.io BufferedReader FileReader]))
 
-(defn make-video-stream [x] (line-seq (new java.io.BufferedReader (new java.io.FileReader x ))))
-
 (defn make-movie-stream
   "A lazy seqence of lines from file."
   [file]
@@ -29,68 +27,24 @@
   "The movie maps from TITLES.TXT."
   (make-movies "TITLES.TXT"))
 
-(nth my-vids 99)
-
-(defn movies-from-year
-  [movies year]
-  "Return sequence of movie titles by year"
-  (letfn [(pred? [m] (= year (:year m)))]
-    (map :title (filter pred? movies))))
-
-(movies-from-year my-vids "1941")
-
-{"1941" [{:title "Citizen Kane" :year "1941"}
-         {:title "Suspense" :year "1941"}]
- "1970" [{:title "Jaws" :year "1970"}]}
-
-(defn make-movie-database
-  "Turn stream of movies ms into a database index by year"
-  [ms]
-  (let [movie (first ms)]
-    {(:year movie) [movie]}))
-
-(make-movie-database my-vids)
-(conj [{:title "Citizen Kane" :year "1941"}
-       {:title "Suspense" :year "1941"}]
-      {:title "Jaws" :year "1970"})
-(def mini-db {"1941" [{:title "Citizen Kane" :year "1941"}
-         {:title "Suspense" :year "1941"}]
- "1970" [{:title "Jaws" :year "1970"}]}
-)
-(conj {:foo 1 :bar 2} {:foo 3 :hoodoo "foo"})
-(def x {:foo [1 2 3] :bar "bar"})
-(update-in x [:foo] conj 4)
-(def psycho {:year "1970" :title "Psycho"})
-(update-in mini-db ["1970"] conj psycho)
-(get mini-db "1941")
-
-(defn make-empty-movie-db []
-    (loop [iteration 2010 ray {}]
-      (if (> iteration 2015)
-        ray
-        (recur (inc iteration) (conj ray {(str iteration) []})))))
-(make-empty-movie-db)
-(def movie-db (make-empty-movie-db))
-movie-db
-
 (defn add-movie-to-db-entry
-  [ignored-prior-vector-for-year-from-update-in db movie]
+  [prior-movies new-movie]
   "Add movie to array for movie's year"
-  (let [year (:year movie)]
-    (conj (or (get db year) []) movie)))
+  (conj (or prior-movies []) new-movie))
 
 (defn add-movies-to-db
   [db movie-stream]
   (loop [db db movies movie-stream]
     (if (empty? movies) db
         (let [m (first movies)
-              db (update-in db [(:year m)] add-movie-to-db-entry db m)]
+              db (update-in db [(:year m)] add-movie-to-db-entry m)]
           (recur db (rest movies))))))
 
 (def db (add-movies-to-db {} my-vids))
 
-(def mv1 {:year "1941" :title "Citizen Kane"})
-#_(add-movie-to-db {} mv) ;; Should return [mv1], returns {}
-(def mv2 {:year "1941" :title "Suspense"})
-#_(add-movie-to-db (add-movie-to-db {} mv1) mv2) ;; should return [mv1
-;; mv2], returns {} instead
+(defn movies-from-year
+  [db year]
+  "Return sequence of movie titles by year"
+  (get db year))
+
+(movies-from-year db "1941")
