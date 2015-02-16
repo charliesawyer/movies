@@ -28,7 +28,7 @@
   (make-movies "TITLES.TXT"))
 
 (defn movies-to-db
-  "A map of year movies made that year from MOVIE-STREAM."
+  "A map of year to movies made that year from MOVIE-STREAM."
   [movie-stream]
   (loop [result {}
          movies movie-stream]
