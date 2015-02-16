@@ -27,18 +27,13 @@
   "The movie maps from TITLES.TXT."
   (make-movies "TITLES.TXT"))
 
-(defn add-movie-to-db-entry
-  [prior-movies new-movie]
-  "Add movie to array for movie's year"
-  (conj (or prior-movies []) new-movie))
-
 (defn add-movies-to-db
   [db movie-stream]
-  (loop [db db movies movie-stream]
-    (if (empty? movies) db
-        (let [m (first movies)
-              db (update-in db [(:year m)] add-movie-to-db-entry m)]
-          (recur db (rest movies))))))
+  (letfn [(add [prior m] (conj (or prior []) m))]
+    (loop [db db movies movie-stream]
+      (if (empty? movies) db
+          (let [m (first movies) db (update-in db [(:year m)] add m)]
+            (recur db (rest movies)))))))
 
 (def db (add-movies-to-db {} my-vids))
 
