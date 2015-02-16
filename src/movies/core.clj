@@ -27,19 +27,20 @@
   "The movie maps from TITLES.TXT."
   (make-movies "TITLES.TXT"))
 
-(defn add-movies-to-db
-  [db movie-stream]
+(defn movies-to-db
+  "A map of year to vector of movies made that year from MOVIE-STREAM."
+  [movie-stream]
   (letfn [(add [prior m] (conj (or prior []) m))]
-    (loop [db db movies movie-stream]
-      (if (empty? movies) db
+    (loop [result {} movies movie-stream]
+      (if (empty? movies) result
           (let [m (first movies) db (update-in db [(:year m)] add m)]
             (recur db (rest movies)))))))
 
-(def db (add-movies-to-db {} my-vids))
+(def db (movies-to-db my-vids))
 
 (defn movies-from-year
   [db year]
   "Return sequence of movie titles by year"
   (get db year))
 
-(movies-from-year db "1941")
+(clojure.pprint/pprint (movies-from-year db "1989"))
