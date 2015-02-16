@@ -4,11 +4,11 @@
   "A map of year to vector of movies from that year."
   [file]
   (letfn [(make [line]
-            (let [[_ t y] (re-find #"^ *(.+) +\((\d+)\) *$" line)]
-              {:title t :year (Integer/parseInt y)}))
-          (add [db movie]
-            (update-in db [(:year movie)] (fnil conj []) movie))]
-    (reduce add {} (map make (line-seq (clojure.java.io/reader file))))))
+            (let [[m t y] (re-find #"^ *(.+) +\((\d+)\) *$" line)]
+              (if (and m t y)
+                {:title t :year (Integer/parseInt y)}
+                (throw (Error. (str "WTF?: " (pr-str line))) ))))]
+    (group-by :year (map make (line-seq (clojure.java.io/reader file))))))
 
 (def db (make-year-to-movies-db "TITLES.TXT"))
 
