@@ -28,13 +28,14 @@
   (make-movies "TITLES.TXT"))
 
 (defn movies-to-db
-  "A map of year to vector of movies made that year from MOVIE-STREAM."
+  "A map of year movies made that year from MOVIE-STREAM."
   [movie-stream]
-  (letfn [(add [prior m] (conj (or prior []) m))]
-    (loop [result {} movies movie-stream]
-      (if (empty? movies) result
-          (let [m (first movies) db (update-in db [(:year m)] add m)]
-            (recur db (rest movies)))))))
+  (loop [result {}
+         movies movie-stream]
+    (if (empty? movies) result
+        (let [m (first movies) y (:year m)]
+          (recur (assoc result y (conj (or (get result y) []) m))
+                 (rest movies))))))
 
 (def db (movies-to-db my-vids))
 
