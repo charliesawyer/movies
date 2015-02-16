@@ -65,26 +65,32 @@
 (get mini-db "1941")
 
 (defn make-empty-movie-db []
-  (loop [iteration 2010 ray {}]
-    (if (> iteration 2015)
-      ray
-      (recur (inc iteration) (conj ray {(str iteration) []})))))
+    (loop [iteration 2010 ray {}]
+      (if (> iteration 2015)
+        ray
+        (recur (inc iteration) (conj ray {(str iteration) []})))))
 (make-empty-movie-db)
 (def movie-db (make-empty-movie-db))
 movie-db
 
-(defn add-movie-to-db-entry [db movie]
+(defn add-movie-to-db-entry
+  [ignored-prior-vector-for-year-from-update-in db movie]
   "Add movie to array for movie's year"
   (let [year (:year movie)]
-     (conj (or (get db year) []) movie)))
+    (conj (or (get db year) []) movie)))
 
 (defn add-movies-to-db
   [db movie-stream]
-  (comment "How do you use add-movie-to-db-entry here?"))
+  (loop [db db movies movie-stream]
+    (if (empty? movies) db
+        (let [m (first movies)
+              db (update-in db [(:year m)] add-movie-to-db-entry db m)]
+          (recur db (rest movies))))))
+
+(def db (add-movies-to-db {} my-vids))
 
 (def mv1 {:year "1941" :title "Citizen Kane"})
-(add-movie-to-db {} mv) ;; Should return [mv1], returns {}
+#_(add-movie-to-db {} mv) ;; Should return [mv1], returns {}
 (def mv2 {:year "1941" :title "Suspense"})
-(add-movie-to-db (add-movie-to-db {} mv1) mv2) ;; should return [mv1
+#_(add-movie-to-db (add-movie-to-db {} mv1) mv2) ;; should return [mv1
 ;; mv2], returns {} instead
-
