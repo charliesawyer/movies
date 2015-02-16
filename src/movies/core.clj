@@ -78,6 +78,10 @@ movie-db
   (let [year (:year movie)]
      (conj (or (get db year) []) movie)))
 
+(defn add-movie-to-db
+  [db movie]
+  (comment "How do you use add-movie-to-db-entry here?"))
+
 (def mv1 {:year "1941" :title "Citizen Kane"})
 (add-movie-to-db {} mv) ;; Should return [mv1], returns {}
 (def mv2 {:year "1941" :title "Suspense"})
